@@ -8,63 +8,63 @@ public class SeasonController : MonoBehaviour
     void Awake() { _instance = this; }
 
     [Header("背景")]
-    public Image bgImage;
-    [Header("春天")]
+    public Image bgImg;
+    [Header("春天背景")]
     public Sprite springSprite;
-    [Header("夏天")]
+    [Header("夏天背景")]
     public Sprite summerSprite;
-    [Header("秋天")]
+    [Header("秋天背景")]
     public Sprite autumnSprite;
-    [Header("冬天")]
+    [Header("冬天背景")]
     public Sprite winterSprite;
-    [Header("雨精灵")]
-    public Sprite[] rainSprites;
-    [Header("雪精灵")]
-    public Sprite[] snowSprites;
-    [Header("遮罩")]
-    public Sprite UIMask;
+    [Header("春天")]
+    public GameObject spring;
+    [Header("夏天")]
+    public GameObject summer;
+    [Header("秋天")]
+    public GameObject autumn;
+    [Header("冬天")]
+    public GameObject winter;
 
-    // 季节类型
-    private SeasonType seasonType;
-    public void SetSeason(SeasonType seasonType) { this.seasonType = seasonType; }
-
-    private int index = 0;
-    private float timer = 0;
-
-    void Update()
+    // 设置季节
+    public void SetSeason(SeasonType seasonType)
     {
-        timer += Time.deltaTime;
-        if (timer >= Consts.Switch_Time)
+        switch (seasonType)
         {
-            // 重置时间
-            timer = 0;
-
-            // 更换天气
-            switch (seasonType)
-            {
-                case SeasonType.Spring:
-                    // 春天正常
-                    bgImage.sprite = springSprite;
-                    this.GetComponent<Image>().sprite = UIMask;
-                    break;
-                case SeasonType.Summer:
-                    // 夏天下雨
-                    bgImage.sprite = summerSprite;
-                    this.GetComponent<Image>().sprite = rainSprites[index++ % rainSprites.Length];
-                    break;
-                case SeasonType.Autumn:
-                    // 秋天正常
-                    bgImage.sprite = autumnSprite;
-                    this.GetComponent<Image>().sprite = UIMask;
-                    break;
-                case SeasonType.Winter:
-                    // 冬天下雪
-                    bgImage.sprite = winterSprite;
-                    this.GetComponent<Image>().sprite = snowSprites[index++ % snowSprites.Length];
-                    break;
-                default:
-                    break;
-            }
+            case SeasonType.Spring:
+                // 春天上云
+                bgImg.sprite = springSprite;
+                spring.SetActive(true);
+                summer.SetActive(false);
+                autumn.SetActive(false);
+                winter.SetActive(false);
+                break;
+            case SeasonType.Summer:
+                // 夏天下雨
+                bgImg.sprite = summerSprite;
+                spring.SetActive(false);
+                summer.SetActive(true);
+                autumn.SetActive(false);
+                winter.SetActive(false);
+                break;
+            case SeasonType.Autumn:
+                // 秋天下云
+                bgImg.sprite = autumnSprite;
+                spring.SetActive(false);
+                summer.SetActive(false);
+                autumn.SetActive(true);
+                winter.SetActive(false);
+                break;
+            case SeasonType.Winter:
+                // 冬天下雪
+                bgImg.sprite = winterSprite;
+                spring.SetActive(false);
+                summer.SetActive(false);
+                autumn.SetActive(false);
+                winter.SetActive(true);
+                break;
+            default:
+                break;
         }
     }
 }

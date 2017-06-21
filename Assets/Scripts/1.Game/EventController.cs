@@ -107,8 +107,8 @@ public class EventController : MonoBehaviour
         // 从对象池获取物体
         GameObject go = PoolMgr.Instance.Spawn(Consts.Rain_Pool);
         go.transform.SetParent(this.transform);
-        go.transform.localPosition = new Vector3(Random.Range(-600, 600), 0, 0);
-        go.transform.localEulerAngles = new Vector3(0, 0, Random.Range(-50, 50));
+        go.transform.localPosition = new Vector3(Random.Range(-Consts.Weather_Offset, Consts.Weather_Offset), 0, 0);
+        go.transform.localEulerAngles = new Vector3(0, 0, Random.Range(-Consts.Weather_Angle, Consts.Weather_Angle));
     }
 
     void Winding()
@@ -116,7 +116,7 @@ public class EventController : MonoBehaviour
         // 从对象池获取物体
         GameObject go = PoolMgr.Instance.Spawn(Consts.Wind_Pool);
         go.transform.SetParent(this.transform);
-        go.transform.localPosition = new Vector3(Random.Range(-600, 600), 0, 0);
-        go.transform.localEulerAngles = new Vector3(0, 0, Random.Range(-50, 50));
+        go.transform.localPosition = new Vector3(Random.Range(-Consts.Weather_Offset, Consts.Weather_Offset), 0, 0);
+        go.transform.localEulerAngles = new Vector3(0, 0, Random.Range(-Consts.Weather_Angle, Consts.Weather_Angle));
     }
 }

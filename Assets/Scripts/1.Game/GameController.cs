@@ -2,9 +2,10 @@
 
 public enum GameState
 {
-    Start, // 开始
-    EventTime, // 事件
-    GapTime, // 间隔
+    Event, // 事件
+    EventTime, // 事件时间
+    Night, // 夜晚
+    NightTime, // 夜晚时间
     GameWin, // 游戏胜利
     GameLose // 游戏失败
 }
@@ -57,7 +58,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         Time.timeScale = 1;
-        gameState = GameState.Start;
+        gameState = GameState.Event;
         seasonType = SeasonType.Winter;
         eventType = EventType.Worm;
         treeType = TreeType.Sapling;
@@ -70,39 +71,36 @@ public class GameController : MonoBehaviour
     {
         switch (gameState)
         {
-            case GameState.Start:
+            case GameState.Event:
                 // NEXT
                 timer = 0;
                 gameState = GameState.EventTime;
                 // 设置季节
                 seasonType = Util.GetNextSeason(seasonType, nowDay++);
                 SeasonController.Instance.SetSeason(seasonType);
-                // 设置日期
-                UIController.Instance.OnDayChange(nowDay, seasonType);
                 // 设置事件
                 eventType = Util.GetEvent(seasonType);
                 EventController.Instance.SetEvent(eventType);
+                // 设置日期
+                UIController.Instance.OnDayChange(nowDay, seasonType);
                 break;
             case GameState.EventTime:
-                // 计时
+                // 事件计时
                 timer += Time.deltaTime;
                 if (timer >= Consts.Event_Time)
                 {
-                    // NEXT
-                    timer = 0;
-                    gameState = GameState.GapTime;
                     // 取消事件
+                    gameState = GameState.Night;
                     EventController.Instance.StopEvent(eventType);
                 }
                 break;
-            case GameState.GapTime:
-                // 计时
-                timer += Time.deltaTime;
-                if (timer >= Consts.Gap_Time)
-                {
-                    // 昼夜更替
-                    DayController.Instance.NextDay();
-                }
+            case GameState.Night:
+                // 昼夜更替
+                gameState = GameState.NightTime;
+                DayController.Instance.NextDay();
+                break;
+            case GameState.NightTime:
+                // NONE
                 break;
             case GameState.GameWin:
                 // 游戏胜利

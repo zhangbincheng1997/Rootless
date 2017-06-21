@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
+using DG.Tweening;
 
 public class DayController : MonoBehaviour
 {
@@ -7,40 +7,22 @@ public class DayController : MonoBehaviour
     public static DayController Instance { get { return _instance; } }
     void Awake() { _instance = this; }
 
-    // 计时器
-    private float timer = 0;
-    // 是否更新
-    private bool isUpdate = true;
-
-    void Update()
-    {
-        if (!isUpdate) { return; }
-
-        timer += Time.deltaTime;
-        if (timer >= Consts.Night_Time)
-        {
-            isUpdate = false;
-            timer = 0;
-            Day();
-        }
-    }
+    private CanvasGroup canvasGroup;
+    void Start() { canvasGroup = this.GetComponent<CanvasGroup>(); }
 
     public void NextDay()
     {
-        isUpdate = true;
-        Night();
+        // 夜晚
+        MessageController.Instance.ShowMessage(Consts.Message_Night);
+        DOTween.To(() => canvasGroup.alpha, x => canvasGroup.alpha = x, 1, Consts.Night_Time)
+            .OnComplete(delegate { Day(); });
     }
 
     void Day()
     {
+        // 白天
         MessageController.Instance.ShowMessage(Consts.Message_Day);
-        this.GetComponent<CanvasGroup>().alpha = 0;
-        GameController.Instance.gameState = GameState.Start;
-    }
-
-    void Night()
-    {
-        MessageController.Instance.ShowMessage(Consts.Message_Night);
-        this.GetComponent<CanvasGroup>().alpha = 1;
+        DOTween.To(() => canvasGroup.alpha, x => canvasGroup.alpha = x, 0, Consts.Night_Time)
+            .OnComplete(delegate { GameController.Instance.gameState = GameState.Event; });
     }
 }

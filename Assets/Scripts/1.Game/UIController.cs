@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
@@ -93,7 +94,9 @@ public class UIController : MonoBehaviour
     // 下一天
     public void OnDayChange(int day, SeasonType seasonType)
     {
-        dayText.text = "第 " + day + " 天" + " ❤ " + Util.GetSeasonString(seasonType);
+        dayText.text = "❤ " + day + " Days"
+                        + "\n" +
+                        "❤ " + seasonType.ToString();
     }
 
     //////////////////// GameOver

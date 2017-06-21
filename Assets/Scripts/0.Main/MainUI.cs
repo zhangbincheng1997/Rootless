@@ -54,7 +54,7 @@ public class MainUI : MonoBehaviour
         effectSlider.value = AudioMgr.Instance.GetEffectVolume();
     }
 
-    // 提示按钮
+    // 规则按钮
     void OnRuleBtnClick()
     {
         AudioMgr.Instance.PlayEffect(Consts.Click_Effect);
@@ -91,7 +91,7 @@ public class MainUI : MonoBehaviour
 
     ////////////////////////////////////////
 
-    // 关闭提示面板
+    // 关闭规则面板
     void OnRuleCloseBtnClick()
     {
         AudioMgr.Instance.PlayEffect(Consts.Click_Effect);

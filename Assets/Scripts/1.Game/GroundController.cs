@@ -9,9 +9,10 @@ public class GroundController : MonoBehaviour
     [Header("地面组件")]
     public Transform groundTrans;
     [Header("虫子集合")]
-    public Transform[] worms;
+    public Transform wormsTrans;
 
-    private GameObject nowTree;
+    private MTree nowTree;
+    private Animator[] worms;
     private RectTransform groundRect;
     private float minX = 0; // 屏幕最小X值
     private float maxX = 0; // 屏幕最大X值
@@ -19,18 +20,23 @@ public class GroundController : MonoBehaviour
 
     void Start()
     {
+        // 地面
         groundRect = this.GetComponent<RectTransform>();
         minX = groundRect.rect.width / 4;
         maxX = Screen.width - groundRect.rect.width / 4;
         nowX = groundRect.position.x;
 
-        // 新生树苗
-        nowTree = Instantiate(Resources.Load(Consts.Sapling_Prefab) as GameObject);
-        nowTree.transform.SetParent(groundTrans);
-        nowTree.transform.localPosition = Vector3.zero;
+        // 树苗
+        GameObject go = Instantiate(Resources.Load(Consts.Sapling_Prefab) as GameObject);
+        go.transform.SetParent(groundTrans);
+        go.transform.localPosition = Vector3.zero;
+        nowTree = go.GetComponent<MTree>();
+
+        // 虫子
+        worms = wormsTrans.GetComponentsInChildren<Animator>();
     }
 
-    void FixedUpdate()
+    void Update()
     {
 #if UNITY_EDITOR
         // 键盘输入
@@ -48,47 +54,46 @@ public class GroundController : MonoBehaviour
     // 树木生长
     public void Grow(TreeType treeType)
     {
-        nowTree.GetComponent<MTree>().Growing();
+        nowTree.Growing();
+        GameObject go = null;
         switch (treeType)
         {
             case TreeType.Sapling:
-                nowTree = Instantiate(Resources.Load(Consts.Sapling_Prefab) as GameObject);
+                go = Instantiate(Resources.Load(Consts.Sapling_Prefab) as GameObject);
                 break;
             case TreeType.Small:
-                nowTree = Instantiate(Resources.Load(Consts.SmallTree_Prefab) as GameObject);
+                go = Instantiate(Resources.Load(Consts.SmallTree_Prefab) as GameObject);
                 break;
             case TreeType.Middle:
-                nowTree = Instantiate(Resources.Load(Consts.MiddleTree_Prefab) as GameObject);
+                go = Instantiate(Resources.Load(Consts.MiddleTree_Prefab) as GameObject);
                 break;
             case TreeType.Big:
-                nowTree = Instantiate(Resources.Load(Consts.BigTree_Prefab) as GameObject);
+                go = Instantiate(Resources.Load(Consts.BigTree_Prefab) as GameObject);
                 break;
             default:
                 break;
         }
-        nowTree.transform.SetParent(groundTrans);
-        nowTree.transform.localPosition = Vector3.zero;
+        go.transform.SetParent(groundTrans);
+        go.transform.localPosition = Vector3.zero;
+        nowTree = go.GetComponent<MTree>();
     }
 
     // 显示虫子
     public void Show()
     {
-        nowTree.GetComponent<MTree>().Shaking();
-        foreach (Transform worm in worms)
+        nowTree.Shaking();
+        wormsTrans.gameObject.SetActive(true);
+        foreach (Animator worm in worms)
         {
-            worm.gameObject.SetActive(true);
             // 随机速度
-            worm.GetComponent<Animator>().speed = Random.Range(0.5f, 1.5f);
+            worm.speed = Random.Range(Consts.Worm_Min_Speed, Consts.Worm_Max_Speed);
         }
     }
 
     // 隐藏虫子
     public void Hide()
     {
-        nowTree.GetComponent<MTree>().Shaking();
-        foreach (Transform worm in worms)
-        {
-            worm.gameObject.SetActive(false);
-        }
+        nowTree.Shaking();
+        wormsTrans.gameObject.SetActive(false);
     }
 }
